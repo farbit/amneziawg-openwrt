@@ -1,14 +1,13 @@
 name: Create Release on Tag
 # on: [workflow_dispatch]
 on:
-  workflow_dispatch:
   push:
     tags:
       - "v*.*.*"
 
 jobs:
   build:
-    name: "${{ matrix.build_env.tag }} - ${{ matrix.build_env.pkgarch}} :: ${{ matrix.build_env.target}}/${{ matrix.build_env.subtarget}} build"
+    name: "v${{ matrix.build_env.tag }} - ${{ matrix.build_env.pkgarch}} :: ${{ matrix.build_env.target}}/${{ matrix.build_env.subtarget}} build"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -18,11 +17,17 @@ jobs:
             target: mediatek
             subtarget: filogic
             vermagic: "56564de2705a53e5f6456d5babec92a2"
+          - tag: "24.10.0-rc2"
+            pkgarch: aarch64_cortex-a53
+            target: qualcommax
+            subtarget: ipq807x
+            vermagic: "4be692f8cc57eec453ed463d48502b35"
 
     steps:
       - uses: actions/checkout@v4
         with:
           repository: openwrt/openwrt
+          ref: v${{ matrix.build_env.tag }}
           fetch-depth: 0
 
       - name: Cache Tools and Kernel
@@ -109,7 +114,7 @@ jobs:
         run: |
           tag_name=${{  github.ref_name }}
           mkdir -p awgrelease
-          postfix="${tag_name}_${{ matrix.build_env.tag }}_${{ matrix.build_env.pkgarch}}_${{ matrix.build_env.target}}_${{ matrix.build_env.subtarget}}"
+          postfix="${tag_name}_v${{ matrix.build_env.tag }}_${{ matrix.build_env.pkgarch}}_${{ matrix.build_env.target}}_${{ matrix.build_env.subtarget}}"
           cp bin/packages/${{ matrix.build_env.pkgarch }}/awgopenwrt/amneziawg-tools_*.ipk awgrelease/amneziawg-tools_${postfix}.ipk
           cp bin/packages/${{ matrix.build_env.pkgarch }}/awgopenwrt/luci-proto-amneziawg_*.ipk awgrelease/luci-proto-amneziawg_${postfix}.ipk
           cp bin/targets/${{ matrix.build_env.target}}/${{ matrix.build_env.subtarget}}/packages/kmod-amneziawg_*.ipk awgrelease/kmod-amneziawg_${postfix}.ipk
