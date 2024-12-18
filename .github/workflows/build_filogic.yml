@@ -13,11 +13,11 @@ jobs:
     strategy:
       matrix:
         build_env:
-          - tag: "snapshots"
+          - tag: "24.10.0-rc2"
             pkgarch: aarch64_cortex-a53
             target: mediatek
             subtarget: filogic
-            vermagic: "2fcfcca39c110f2e13a201fe126d6c72"
+            vermagic: "56564de2705a53e5f6456d5babec92a2"
 
     steps:
       - uses: actions/checkout@v4
@@ -42,12 +42,12 @@ jobs:
           echo "pkgarch: ${{ matrix.build_env.pkgarch}}, target:${{ matrix.build_env.target}}, subtarget: ${{ matrix.build_env.subtarget}}"
 
           # Setup & install feeds
-          wget https://downloads.openwrt.org/${{ matrix.build_env.tag }}/targets/${{ matrix.build_env.target}}/${{ matrix.build_env.subtarget}}/feeds.buildinfo -O feeds.conf
+          wget https://downloads.openwrt.org/releases/${{ matrix.build_env.tag }}/targets/${{ matrix.build_env.target}}/${{ matrix.build_env.subtarget}}/feeds.buildinfo -O feeds.conf
           echo "src-git awgopenwrt https://github.com/farbit/amneziawg-openwrt.git" >> ./feeds.conf
           ./scripts/feeds update && ./scripts/feeds install -a
 
           # Setup config with AWG and dependencies
-          wget https://downloads.openwrt.org/${{ matrix.build_env.tag }}/targets/${{ matrix.build_env.target}}/${{ matrix.build_env.subtarget}}/config.buildinfo -O .config
+          wget https://downloads.openwrt.org/releases/${{ matrix.build_env.tag }}/targets/${{ matrix.build_env.target}}/${{ matrix.build_env.subtarget}}/config.buildinfo -O .config
           echo "CONFIG_PACKAGE_kmod-amneziawg=m" >> .config
           echo "CONFIG_PACKAGE_amneziawg-tools=y" >> .config
           echo "CONFIG_PACKAGE_luci-proto-amneziawg=y" >> .config
