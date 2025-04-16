@@ -13,12 +13,12 @@ jobs:
     strategy:
       matrix:
         build_env:
-          - tag: "24.10.0"
+          - tag: "24.10.1"
             pkgarch: aarch64_cortex-a53
             target: mediatek
             subtarget: filogic
             vermagic: "6ace983a14b769f576fe9c4c7961bd89"
-          - tag: "24.10.0"
+          - tag: "24.10.1"
             pkgarch: aarch64_cortex-a53
             target: qualcommax
             subtarget: ipq807x
